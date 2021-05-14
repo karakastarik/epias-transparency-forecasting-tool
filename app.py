@@ -4,8 +4,8 @@ import time
 import datetime 
 from datetime import timedelta 
 import pandas as pd
-import plotly.express as px
-import plotly.graph_objects as go
+#import plotly.express as px
+#import plotly.graph_objects as go
 
 start_date=st.sidebar.date_input(label="Start Date", value=datetime.date.today()-datetime.timedelta(days=1))
 end_date=st.sidebar.date_input("End Date", value=datetime.date.today())
