@@ -1,11 +1,11 @@
 import functions as func # import functions.py file
 import streamlit as st #streamlit
-import time
 import datetime 
 from datetime import timedelta 
 import pandas as pd
-#import plotly.express as px
-#import plotly.graph_objects as go
+
+import plotly.express as px
+import plotly.graph_objects as go
 
 start_date=st.sidebar.date_input(label="Start Date", value=datetime.date.today()-datetime.timedelta(days=1))
 end_date=st.sidebar.date_input("End Date", value=datetime.date.today())
@@ -22,19 +22,28 @@ real_time_gen_data.head()
 
 #Stremlit Side
 st.write("""
-# Forecasting Tool# 
+## Forecasting Tool# 
 # """)
 
-st.write("""## MCP""")
-st.write(mcp_data.head())
-st.write("""## Consumption""")
-st.write(consumption_data.head())
-st.write("""## Real Time Generation Data""")
-st.write(real_time_gen_data.head())
-st.line_chart(consumption_data.Consumption)
+#st.table(mcp_data.head())
+#st.write("""## Consumption""")
+#st.table(consumption_data.head())
+#st.write("""## Real Time Generation Data""")
+#st.table(real_time_gen_data.head())
+#st.line_chart(consumption_data.Consumption)
 
-#fig = go.Figure()
-#fig.add_trace(go.Scatter( x=consumption_data.Date, y=consumption_data.Consumption, mode='lines',name='lines'))
+st.subheader("Hourly Consumption (MWh)")
+fig_cons = go.Figure()
+fig_cons.add_trace(go.Scatter(x=consumption_data.Date, y=consumption_data.Consumption, mode='lines',name='Consumption (MWh)'))
+fig_cons.update_layout(xaxis_title='Date',yaxis_title='Consumption (MWh)',plot_bgcolor='rgba(0,0,0,0)')
+st.plotly_chart(fig_cons)
+
+st.subheader("Market Clearing Price-TL")
+fig_mcp = go.Figure()
+fig_mcp.add_trace(go.Scatter(x=mcp_data.Date, y=mcp_data.MCP_TL, mode='lines',name='MCP TL'))
+fig_mcp.update_layout(xaxis_title='Date',yaxis_title='MCP',plot_bgcolor='rgba(0,0,0,0)')
+st.plotly_chart(fig_mcp)
+
 #fig = px.line(data, x=~Date,y = ~Consumption,name = "Consumption", type = 'scatter', mode = 'lines') 
 #fig = fig.add_trace(data,y = ~Generation , name = 'Generation', mode = 'lines') 
-#st.plotly_chart(fig)
+
