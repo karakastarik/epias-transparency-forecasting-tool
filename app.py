@@ -21,24 +21,33 @@ real_time_gen_data = func.real_time_gen(startDate=str(start_date),endDate=str(en
 real_time_gen_data.head()
 
 #Stremlit Side
-st.write("""
-## Forecasting Tool# 
-# """)
+st.markdown("<h1 style='text-align: center; color: black;'>Forecasting Tool</h1>", unsafe_allow_html=True)
+cons_describe=pd.DataFrame(consumption_data.describe()).reset_index().rename(index=str,columns={"index":"Statistic"})
 
-#st.table(mcp_data.head())
-#st.write("""## Consumption""")
-#st.table(consumption_data.head())
-#st.write("""## Real Time Generation Data""")
-#st.table(real_time_gen_data.head())
-#st.line_chart(consumption_data.Consumption)
+st.markdown("<h3 style='text-align: center; color: black;'>Consumption-Descriptive Statistics</h3>", unsafe_allow_html=True)
+st.table(cons_describe)
+#st.table(pd.DataFrame(consumption_data.describe()).reset_index().rename(index=str,columns={"index":"Statistic"}))
+#cons_table = go.Figure(data=[go.Table(
+#    header=dict(values=list(cons_describe.columns),
+#                fill_color='midnightblue',
+#                align='center'),
+#    cells=dict(values=[cons_describe.Statistic, cons_describe.Consumption],
+#               fill_color='lightgrey',
+#               align='center'))
+#])
 
-st.subheader("Hourly Consumption (MWh)")
+#st.plotly_chart(cons_table)
+st.markdown("<h3 style='text-align: center; color: black;'>Hourly Consumption (MWh)</h3>", unsafe_allow_html=True)
+#cons_markdown = f"Average hourly consumption in the last **{consumption_data.Date.count()}** hours is: **{consumption_data.Consumption.mean():.2f}**."
+#st.markdown(cons_markdown)
 fig_cons = go.Figure()
 fig_cons.add_trace(go.Scatter(x=consumption_data.Date, y=consumption_data.Consumption, mode='lines',name='Consumption (MWh)'))
 fig_cons.update_layout(xaxis_title='Date',yaxis_title='Consumption (MWh)',plot_bgcolor='rgba(0,0,0,0)')
 st.plotly_chart(fig_cons)
 
-st.subheader("Market Clearing Price-TL")
+st.markdown("<h3 style='text-align: center; color: black;'>Market Clearing Price-Descriptive Statistics</h3>", unsafe_allow_html=True)
+st.table(pd.DataFrame(mcp_data.describe()).reset_index().rename(index=str,columns={"index":"Statistic"}))
+st.markdown("<h3 style='text-align: center; color: black;'>Market Clearing Price-TL</h3>", unsafe_allow_html=True)
 fig_mcp = go.Figure()
 fig_mcp.add_trace(go.Scatter(x=mcp_data.Date, y=mcp_data.MCP_TL, mode='lines',name='MCP TL'))
 fig_mcp.update_layout(xaxis_title='Date',yaxis_title='MCP',plot_bgcolor='rgba(0,0,0,0)')
