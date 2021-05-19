@@ -21,10 +21,11 @@ if page=="Data Visualization":
     end_date=st.sidebar.date_input(label="End Date", value=datetime.date.today())
     st.markdown("<h1 style='text-align: center; color: black;'>Forecasting Tool-Visualization Tab</h1>", unsafe_allow_html=True)
     st.markdown("""This tool aims to generate time series forecast for Turkey's electric power industry. Data comes from
-     [EPIAS Transparency Platform](https://seffaflik.epias.com.tr/transparency/index.xhtml) and updated hourly.""")
+     **[EPIAS Transparency Platform](https://seffaflik.epias.com.tr/transparency/index.xhtml)** and updated hourly.""")
 
     st.markdown("""We use several algorithm for forecasting. The documentation of the algorithms are:
-      **[Prophet](https://facebook.github.io/prophet/)**.""")
+      **[XGBoost](https://xgboost.readthedocs.io/en/latest/python/index.html)**, **[ARIMA](https://www.statsmodels.org/stable/generated/statsmodels.tsa.arima_model.ARIMA.html)**, 
+      **[LightGBM](https://lightgbm.readthedocs.io/en/latest/)**""")
     if end_date > start_date:
         #Import Consumption data from the source.
         consumption_data = func.consumption_realtime(startDate=str(start_date),endDate=str(end_date))
@@ -60,13 +61,11 @@ if page=="Data Visualization":
 
 if page=="About":
     st.header("About")
-    st.write("")
-    st.write("Author:")
-    st.markdown(""" **[Tarik Karakas](https://tr.linkedin.com/in/karakastarik)**""")
-    st.markdown(""" **[Recep Alcep](https://tr.linkedin.com/in/recepalcep)**""")
+    st.write("v1.0")
+    st.write("Authors:")
+    st.markdown(""" **[Tarik Karakas](https://tr.linkedin.com/in/karakastarik)**, **[Recep Alcep](https://tr.linkedin.com/in/recepalcep)**""")
     st.markdown("""**[Source code](https://github.com/karakastarik/epias-transparency-forecasting-tool)**""")
 
-    st.write("Created on 10/05/2021")
 
 
 
