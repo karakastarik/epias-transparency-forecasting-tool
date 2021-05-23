@@ -76,4 +76,3 @@ def real_time_gen(startDate, endDate):
     "LNG","Biomass","Naphta","Import Coal","Asphaltite Coal","Wind","Nucklear","Sun","Import-Export"]]
     
     return df
-
