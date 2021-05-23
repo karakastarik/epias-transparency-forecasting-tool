@@ -1,4 +1,3 @@
-#this script is currently under development and will not affect the tool.
 import numpy as np
 import pandas as pd
 import datetime 
