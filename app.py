@@ -1,15 +1,12 @@
 from functions import mcp, consumption_realtime # import functions.py 
-from forecasting import  select_period, select_algorithm,extract_features,forecast,plot_forecast
+from forecasting import  select_period, plot_forecast
 import streamlit as st #streamlit
-from streamlit import caching
 import datetime 
-from datetime import timedelta 
 import pandas as pd
-import plotly.express as px
 import plotly.graph_objects as go
 
 
-st.set_page_config(page_title ="Forecasting Tool")
+st.set_page_config(page_title ="Forecasting Tool",layout="wide")
 
 tabs = ["Forecasting","Data Visualization","About"]
 
@@ -20,14 +17,15 @@ page = st.sidebar.radio("Tabs",tabs)
 #@st.cache(persist=False,allow_output_mutation=True,suppress_st_warning=True,show_spinner= True)
 if page == "Forecasting":
 
-    st.markdown("<h1 style='text-align: center; color: black;'>Forecasting</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center;'>Forecasting</h1>", unsafe_allow_html=True)
     st.markdown("""We use several algorithm for forecasting. The documentation of the algorithms are:
       **[XGBoost](https://xgboost.readthedocs.io/en/latest/python/index.html)**, **[ARIMA](https://www.statsmodels.org/stable/generated/statsmodels.tsa.arima_model.ARIMA.html)**, 
       **[LightGBM](https://lightgbm.readthedocs.io/en/latest/)**""")
     selected_period=st.selectbox("Select a forecasting period",["1 day","2 days","3 days","1 week","2 weeks","3 weeks","1 month"])
+    selected_algorithm=st.selectbox("Select an algorithm",["LightGBM","XGBoost"])
     button=st.button("Forecast")
     if button==True:
-        fig1=plot_forecast(select_period(selected_period))
+        fig1=plot_forecast(select_period(selected_period),selected_algorithm)
         st.plotly_chart(fig1)
 
 if page=="Data Visualization":
@@ -35,7 +33,7 @@ if page=="Data Visualization":
     start_date=st.sidebar.date_input(label="Start Date", value=datetime.date.today()-datetime.timedelta(days=10))
     end_date=st.sidebar.date_input(label="End Date", value=datetime.date.today())
     
-    st.markdown("<h1 style='text-align: center; color: black;'>Data Visualization</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center;'>Data Visualization</h1>", unsafe_allow_html=True)
     st.markdown("""This tool aims to generate time series forecast for Turkey's electric power industry. Data comes from
      **[EPIAS Transparency Platform](https://seffaflik.epias.com.tr/transparency/index.xhtml)** and updated hourly.""")
     if end_date > start_date or end_date == start_date:
