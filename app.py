@@ -9,7 +9,11 @@ import plotly.graph_objects as go
 st.set_page_config(page_title ="Forecasting Tool",layout="wide")
 
 tabs = ["Forecasting","Data Visualization","About"]
+#Import Consumption data from the source.
 
+forecast_start_date=datetime.date.today()-datetime.timedelta(days=6095)
+forecast_end_date=datetime.date.today()
+consumption_data = consumption_realtime(startDate=str(forecast_start_date),endDate=str(forecast_end_date))
 
 page = st.sidebar.radio("Tabs",tabs)
 
@@ -25,7 +29,7 @@ if page == "Forecasting":
     selected_algorithm=st.selectbox("Select an algorithm",["LightGBM","XGBoost"])
     button=st.button("Forecast")
     if button==True:
-        fig1=plot_forecast(select_period(selected_period),selected_algorithm)
+        fig1=plot_forecast(consumption_data,select_period(selected_period),selected_algorithm)
         st.plotly_chart(fig1)
 
 if page=="Data Visualization":
@@ -38,9 +42,8 @@ if page=="Data Visualization":
      **[EPIAS Transparency Platform](https://seffaflik.epias.com.tr/transparency/index.xhtml)** and updated hourly.""")
     if end_date > start_date or end_date == start_date:
         
-        #Import Consumption data from the source.
-        consumption_data = consumption_realtime(startDate=str(start_date),endDate=str(end_date))
-        cons_describe=pd.DataFrame(consumption_data.describe()).reset_index().rename(index=str,columns={"index":"Statistic"})
+        consumption_data_vis = consumption_realtime(startDate=str(start_date),endDate=str(end_date))
+        cons_describe=pd.DataFrame(consumption_data_vis.describe()).reset_index().rename(index=str,columns={"index":"Statistic"})
         
         #Consumption-Descriptive Statistics
         st.markdown("<h3 style='text-align: center; color: black;'>Consumption-Descriptive Statistics</h3>", unsafe_allow_html=True)
@@ -48,7 +51,7 @@ if page=="Data Visualization":
         
         #Consumption-Hourly Graph
         fig_cons = go.Figure()
-        fig_cons.add_trace(go.Scatter(x=consumption_data.Date, y=consumption_data.Consumption, mode='lines',name='Consumption (MWh)'))
+        fig_cons.add_trace(go.Scatter(x=consumption_data_vis.Date, y=consumption_data_vis.Consumption, mode='lines',name='Consumption (MWh)'))
         fig_cons.update_layout(xaxis_title='Date',yaxis_title='Consumption (MWh)',plot_bgcolor='rgba(0,0,0,0)')
         st.markdown("<h3 style='text-align: center; color: black;'>Hourly Consumption (MWh)</h3>", unsafe_allow_html=True)
         st.plotly_chart(fig_cons)

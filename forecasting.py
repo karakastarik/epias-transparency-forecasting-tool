@@ -1,6 +1,4 @@
 import pandas as pd
-import datetime 
-from functions import consumption_realtime
 from xgboost import XGBRegressor
 from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import train_test_split
@@ -32,14 +30,14 @@ def extract_features(df):
     df=pd.get_dummies(df, columns = ["dayofweek"], prefix = ["dayofweek"])
 
     return df
-
-def forecast(periods,selected_algorithm):
-    forecast_start_date=datetime.date.today()-datetime.timedelta(days=6095)
-    forecast_end_date=datetime.date.today()
-    forecast_consumption = consumption_realtime(startDate=str(forecast_start_date),endDate=str(forecast_end_date))
-    date=pd.date_range(start=pd.to_datetime(forecast_consumption.Date).tail(1).iloc[0], periods=periods, freq='H')
+ 
+def forecast(data,periods,selected_algorithm):
+    #forecast_start_date=datetime.date.today()-datetime.timedelta(days=6095)
+    #forecast_end_date=datetime.date.today()
+    #forecast_consumption = consumption_realtime(startDate=str(forecast_start_date),endDate=str(forecast_end_date))
+    date=pd.date_range(start=pd.to_datetime(data.Date).tail(1).iloc[0], periods=periods, freq='H')
     date=pd.DataFrame(date).rename(columns={0:"Date"})
-    forecast_consumption=pd.merge(forecast_consumption ,date,how='outer')
+    forecast_consumption=pd.merge(data ,date,how='outer')
     forecast_consumption=extract_features(forecast_consumption)
     forecast_consumption["rolling_mean"] = forecast_consumption["Consumption"].rolling(window=periods, min_periods=1).mean().shift(1).values
     forecast_consumption["rolling_max"] = forecast_consumption["Consumption"].rolling(window=periods, min_periods=1).max().shift(1).values
@@ -78,8 +76,8 @@ def forecast(periods,selected_algorithm):
     return y,y_pred,X_pred
 
 
-def plot_forecast(periods,selected_algorithm):
-    y, y_pred, X_pred= forecast(periods,selected_algorithm)
+def plot_forecast(data,periods,selected_algorithm):
+    y, y_pred, X_pred= forecast(data,periods,selected_algorithm)
     fig1 = go.Figure()
     fig1.add_trace(go.Scatter(x=y.index,y=y,name='Historical Data'))
     fig1.add_trace(go.Scatter(x=X_pred.index,y=y_pred,name='Forecast'))

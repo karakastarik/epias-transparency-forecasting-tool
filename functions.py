@@ -1,4 +1,3 @@
-
 import requests
 import json
 import pandas as pd
@@ -19,7 +18,7 @@ def get_request_result(query):
     json_data = json.loads(response.text.encode('utf8'))
 
     return json_data
-            
+    
 def mcp(startDate, endDate):
     '''
     Market Clearing Price TL-USD-EUR
