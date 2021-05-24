@@ -67,11 +67,11 @@ def forecast(periods):
 
     reg.fit(X_train, y_train, 
         eval_set=[(X_train, y_train), (X_val, y_val)],
-        early_stopping_rounds=100,eval_metric="rmse",
+        early_stopping_rounds=60,eval_metric="rmse",
         verbose=True)
     y_pred=reg.predict(X_pred)
 
-    y=y.loc['2021-03-01':]
+    y=y.loc['2021-04-01':]
 
     return y,y_pred,reg,X_pred
 
