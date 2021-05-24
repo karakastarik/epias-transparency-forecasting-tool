@@ -71,7 +71,7 @@ def forecast(periods):
         verbose=True)
     y_pred=reg.predict(X_pred)
 
-    y=y.loc['2021-03-01':]
+    y=y.loc['2021-04-01':]
 
     return y,y_pred,reg,X_pred
 
