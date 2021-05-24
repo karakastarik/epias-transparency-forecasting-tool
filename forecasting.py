@@ -3,6 +3,7 @@ import pandas as pd
 import datetime 
 from functions import consumption_realtime, mcp
 from xgboost import XGBRegressor
+from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import train_test_split
 from sklearn.neighbors import KNeighborsRegressor
 from sklearn.tree import DecisionTreeRegressor
@@ -67,9 +68,13 @@ def forecast(periods):
 
     reg.fit(X_train, y_train, 
         eval_set=[(X_train, y_train), (X_val, y_val)],
-        early_stopping_rounds=60,eval_metric="rmse",
-        verbose=True)
+        early_stopping_rounds=60,eval_metric="rmse",verbose=False)
+    
     y_pred=reg.predict(X_pred)
+    y_train_pred=reg.predict(X_train)
+    y_val_pred=reg.predict(X_val)
+    print("Final Train RMSE",mean_squared_error(y_train, y_train_pred, squared=False))
+    print("Final Validation RMSE:",mean_squared_error(y_val, y_val_pred, squared=False))
 
     y=y.loc['2021-04-01':]
 
