@@ -1,4 +1,4 @@
-from functions import mcp, consumption_realtime # import functions.py 
+from functions import mcp, consumption_realtime # import functions.py
 from forecasting import  select_period, plot_forecast
 import streamlit as st #streamlit
 import datetime 
