@@ -4,6 +4,9 @@ from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import train_test_split
 from lightgbm import LGBMRegressor
 import plotly.graph_objects as go
+import streamlit as st
+import datetime
+from functions import consumption_realtime
 
 def select_period(period):
     periods={"1 day":24,"2 days":48,"3 days":72,"1 week":168,"2 weeks":336,"3 weeks":504,"1 month":672}
@@ -30,19 +33,21 @@ def extract_features(df):
     df=pd.get_dummies(df, columns = ["dayofweek"], prefix = ["dayofweek"])
 
     return df
- 
+
+
 def forecast(data,periods,selected_algorithm):
-    #forecast_start_date=datetime.date.today()-datetime.timedelta(days=6095)
-    #forecast_end_date=datetime.date.today()
-    #forecast_consumption = consumption_realtime(startDate=str(forecast_start_date),endDate=str(forecast_end_date))
+    forecast_start_date=datetime.date.today()-datetime.timedelta(days=6095)
+    forecast_end_date=datetime.date.today()
+    forecast_consumption = consumption_realtime(startDate=str(forecast_start_date),endDate=str(forecast_end_date))
     date=pd.date_range(start=pd.to_datetime(data.Date).tail(1).iloc[0], periods=periods, freq='H')
     date=pd.DataFrame(date).rename(columns={0:"Date"})
     forecast_consumption=pd.merge(data ,date,how='outer')
     forecast_consumption=extract_features(forecast_consumption)
-    forecast_consumption["rolling_mean"] = forecast_consumption["Consumption"].rolling(window=periods, min_periods=1).mean().shift(1).values
-    forecast_consumption["rolling_max"] = forecast_consumption["Consumption"].rolling(window=periods, min_periods=1).max().shift(1).values
-    forecast_consumption["rolling_min"] = forecast_consumption["Consumption"].rolling(window=periods, min_periods=1).min().shift(1).values
-    forecast_consumption=forecast_consumption[1:]
+    forecast_consumption["rolling_mean"] = forecast_consumption["Consumption"].rolling(window=periods, min_periods=1).mean().values
+    forecast_consumption["rolling_max"] = forecast_consumption["Consumption"].rolling(window=periods, min_periods=1).max().values
+    forecast_consumption["rolling_min"] = forecast_consumption["Consumption"].rolling(window=periods, min_periods=1).min().values
+    #forecast_consumption["rolling_std"] = forecast_consumption["Consumption"].rolling(window=periods, min_periods=1).std().values
+    #forecast_consumption=forecast_consumption[1:]
     split_date = pd.to_datetime(forecast_consumption.Date).tail(periods).iloc[0]
 
     forecast_consumption_historical = forecast_consumption.loc[forecast_consumption.Date <= split_date].copy()
@@ -52,21 +57,24 @@ def forecast(data,periods,selected_algorithm):
 
     y=forecast_consumption_historical["Consumption"]
     X=forecast_consumption_historical.drop("Consumption",axis=1)
-    X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.05,shuffle = False)
+    X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.1,shuffle = False)
     X_pred=forecast_consumption_predict.drop("Consumption",axis=1)
-
+    
+    print("Starting to prediction...") #log
     if selected_algorithm=="LightGBM":
-        lgb_model=LGBMRegressor(learning_rate= 0.1, max_depth= 7, n_estimators=2000)
-        lgb_model.fit(X_train, y_train, eval_set=[(X_train, y_train), (X_val, y_val)],early_stopping_rounds=100,eval_metric="rmse",verbose=True)
+        lgb_model=LGBMRegressor(learning_rate= 0.1, max_depth= 7, n_estimators=400)
+        lgb_model.fit(X_train, y_train, eval_set=[(X_train, y_train), (X_val, y_val)],early_stopping_rounds=100,eval_metric="rmse",verbose=False)
         y_pred=lgb_model.predict(X_pred)
         y_train_pred=lgb_model.predict(X_train)
         y_val_pred=lgb_model.predict(X_val)
-    else:
+    elif selected_algorithm=="XGBoost":
         xgb_model = XGBRegressor(colsample_bytree = 1, learning_rate = 0.5, max_depth = 5, n_estimators = 200)
-        xgb_model.fit(X_train, y_train, eval_set=[(X_train, y_train), (X_val, y_val)],early_stopping_rounds=100,eval_metric="rmse",verbose=True)
+        xgb_model.fit(X_train, y_train, eval_set=[(X_train, y_train), (X_val, y_val)],early_stopping_rounds=100,eval_metric="rmse",verbose=False)
         y_pred=xgb_model.predict(X_pred)
         y_train_pred=xgb_model.predict(X_train)
         y_val_pred=xgb_model.predict(X_val)
+    else:
+        st.write("Something went wrong, please re-run the app.")
 
     print("Final Train RMSE",mean_squared_error(y_train, y_train_pred, squared=False))
     print("Final Validation RMSE:",mean_squared_error(y_val, y_val_pred, squared=False))
@@ -74,7 +82,6 @@ def forecast(data,periods,selected_algorithm):
     y=y.loc['2021-04-01':]
 
     return y,y_pred,X_pred
-
 
 def plot_forecast(data,periods,selected_algorithm):
     y, y_pred, X_pred= forecast(data,periods,selected_algorithm)

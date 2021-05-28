@@ -1,19 +1,17 @@
+from contextlib import suppress
 from functions import mcp, consumption_realtime # import functions.py
 from forecasting import  select_period, plot_forecast
 import streamlit as st #streamlit
 import datetime 
 import pandas as pd
 import plotly.graph_objects as go
+import warnings
+warnings.filterwarnings("ignore")
 
 
 st.set_page_config(page_title ="Forecasting Tool",layout="wide")
 
 tabs = ["Forecasting","Data Visualization","About"]
-#Import Consumption data from the source.
-
-forecast_start_date=datetime.date.today()-datetime.timedelta(days=6095)
-forecast_end_date=datetime.date.today()
-consumption_data = consumption_realtime(startDate=str(forecast_start_date),endDate=str(forecast_end_date))
 
 page = st.sidebar.radio("Tabs",tabs)
 
@@ -25,10 +23,14 @@ if page == "Forecasting":
     st.markdown("""We use several algorithm for forecasting. The documentation of the algorithms are:
       **[XGBoost](https://xgboost.readthedocs.io/en/latest/python/index.html)**, **[ARIMA](https://www.statsmodels.org/stable/generated/statsmodels.tsa.arima_model.ARIMA.html)**, 
       **[LightGBM](https://lightgbm.readthedocs.io/en/latest/)**""")
-    selected_period=st.selectbox("Select a forecasting period",["1 day","2 days","3 days","1 week","2 weeks","3 weeks","1 month"])
-    selected_algorithm=st.selectbox("Select an algorithm",["LightGBM","XGBoost"])
+    selected_period=st.selectbox("Select a forecasting period",["1 day","2 days","3 days","1 week","2 weeks","3 weeks"])
+    selected_algorithm=st.selectbox("Select an algorithm",["XGBoost","LightGBM"])
     button=st.button("Forecast")
     if button==True:
+        print("Importing consumption data...") #log
+        forecast_start_date=datetime.date.today()-datetime.timedelta(days=6095)
+        forecast_end_date=datetime.date.today()
+        consumption_data = consumption_realtime(startDate=str(forecast_start_date),endDate=str(forecast_end_date))
         fig1=plot_forecast(consumption_data,select_period(selected_period),selected_algorithm)
         st.plotly_chart(fig1)
 
