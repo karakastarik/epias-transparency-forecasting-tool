@@ -9,7 +9,7 @@ import warnings
 warnings.filterwarnings("ignore")
 
 
-st.set_page_config(page_title ="Forecasting Tool",layout="wide")
+st.set_page_config(page_title ="Forecasting Tool")
 
 tabs = ["Forecasting","Data Visualization","About"]
 
@@ -27,12 +27,16 @@ if page == "Forecasting":
     selected_algorithm=st.selectbox("Select an algorithm",["XGBoost","LightGBM"])
     button=st.button("Forecast")
     if button==True:
-        print("Importing consumption data...") #log
-        forecast_start_date=datetime.date.today()-datetime.timedelta(days=6095)
-        forecast_end_date=datetime.date.today()
-        consumption_data = consumption_realtime(startDate=str(forecast_start_date),endDate=str(forecast_end_date))
-        fig1=plot_forecast(consumption_data,select_period(selected_period),selected_algorithm)
-        st.plotly_chart(fig1)
+        with st.spinner("Forecasting in progress. Please wait..."):
+            forecast_start_date=datetime.date.today()-datetime.timedelta(days=6095)
+            forecast_end_date=datetime.date.today()
+            print("Importing data for prediction")
+            try:
+                consumption_data = consumption_realtime(startDate=str(forecast_start_date),endDate=str(forecast_end_date))
+                fig1=plot_forecast(consumption_data,select_period(selected_period),selected_algorithm)
+                st.plotly_chart(fig1)
+            except:
+                st.warning("We canThere is a problem about database. Please open an issue about that..")
 
 if page=="Data Visualization":
     #Start and End Dates
@@ -76,10 +80,6 @@ if page=="Data Visualization":
     else:
         st.warning("Start date cannot be greater than end date. Please re-enter dates.")
 
-
-
-      
-
 if page == "About":
     st.header("About")
     st.write("v1.0")
@@ -91,7 +91,7 @@ if page == "About":
 
 
 #Real time generation
-#real_time_gen_data = func.real_time_gen(startDate=str(start_date),endDate=str(end_date))
+#real_time_gen_data = real_time_gen(startDate=str(start_date),endDate=str(end_date))
 #real_time_gen_data.head()
 
 
