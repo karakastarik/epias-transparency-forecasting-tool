@@ -20,8 +20,8 @@ page = st.sidebar.radio("Tabs",tabs)
 if page == "Forecasting":
 
     st.markdown("<h1 style='text-align: center;'>Forecasting</h1>", unsafe_allow_html=True)
-    st.markdown("""We use several algorithm for forecasting. The documentation of the algorithms are:
-      **[XGBoost](https://xgboost.readthedocs.io/en/latest/python/index.html)**, **[ARIMA](https://www.statsmodels.org/stable/generated/statsmodels.tsa.arima_model.ARIMA.html)**, 
+    st.markdown("""We use several algorithms (for now) for forecasting. The documentation of the algorithms are:
+      **[XGBoost](https://xgboost.readthedocs.io/en/latest/python/index.html)**, 
       **[LightGBM](https://lightgbm.readthedocs.io/en/latest/)**""")
     selected_period=st.selectbox("Select a forecasting period",["1 day","2 days","3 days","1 week","2 weeks","3 weeks"])
     selected_algorithm=st.selectbox("Select an algorithm",["XGBoost","LightGBM"])
@@ -36,7 +36,7 @@ if page == "Forecasting":
                 fig1=plot_forecast(consumption_data,select_period(selected_period),selected_algorithm)
                 st.plotly_chart(fig1)
             except:
-                st.warning("We canThere is a problem about database. Please open an issue about that..")
+                st.warning("There is a problem about database. Please try again later...")
 
 if page=="Data Visualization":
     #Start and End Dates
