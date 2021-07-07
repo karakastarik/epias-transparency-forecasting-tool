@@ -8,6 +8,8 @@ import streamlit as st
 import datetime
 from functions import consumption_realtime
 
+
+
 def select_period(period):
     periods={"1 day":24,"2 days":48,"3 days":72,"1 week":168,"2 weeks":336,"3 weeks":504,"1 month":672}
     return periods[period]
@@ -46,6 +48,7 @@ def forecast(data,periods,selected_algorithm):
     forecast_consumption["rolling_mean"] = forecast_consumption["Consumption"].rolling(window=periods, min_periods=1).mean().values
     forecast_consumption["rolling_max"] = forecast_consumption["Consumption"].rolling(window=periods, min_periods=1).max().values
     forecast_consumption["rolling_min"] = forecast_consumption["Consumption"].rolling(window=periods, min_periods=1).min().values
+    forecast_consumption["difference"] =  forecast_consumption["Consumption"].diff()
     #forecast_consumption["rolling_std"] = forecast_consumption["Consumption"].rolling(window=periods, min_periods=1).std().values
     #forecast_consumption=forecast_consumption[1:]
     split_date = pd.to_datetime(forecast_consumption.Date).tail(periods).iloc[0]

@@ -20,7 +20,7 @@ page = st.sidebar.radio("Tabs",tabs)
 if page == "Forecasting":
 
     st.markdown("<h1 style='text-align: center;'>Forecasting</h1>", unsafe_allow_html=True)
-    st.markdown("""We use several algorithms (for now) for forecasting. The documentation of the algorithms are:
+    st.markdown("""We use two algorithms (for now) for forecasting. The documentation of the algorithms are:
       **[XGBoost](https://xgboost.readthedocs.io/en/latest/python/index.html)**, 
       **[LightGBM](https://lightgbm.readthedocs.io/en/latest/)**""")
     selected_period=st.selectbox("Select a forecasting period",["1 day","2 days","3 days","1 week","2 weeks","3 weeks"])
@@ -30,7 +30,7 @@ if page == "Forecasting":
         with st.spinner("Forecasting in progress. Please wait..."):
             forecast_start_date=datetime.date.today()-datetime.timedelta(days=6095)
             forecast_end_date=datetime.date.today()
-            print("Importing data for prediction")
+            print("Importing data for prediction") #log
             try:
                 consumption_data = consumption_realtime(startDate=str(forecast_start_date),endDate=str(forecast_end_date))
                 fig1=plot_forecast(consumption_data,select_period(selected_period),selected_algorithm)
