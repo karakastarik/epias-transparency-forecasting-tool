@@ -14,8 +14,6 @@ tabs = ["Forecasting","Data Visualization","About"]
 
 page = st.sidebar.radio("Tabs",tabs)
 
-
-#@st.cache(persist=False,allow_output_mutation=True,suppress_st_warning=True,show_spinner= True)
 if page == "Forecasting":
 
     st.markdown("<h1 style='text-align: center;'>Forecasting</h1>", unsafe_allow_html=True)
@@ -86,17 +84,9 @@ if page == "About":
     st.markdown(""" **[Tarik Karakas](https://tr.linkedin.com/in/karakastarik)**, **[Recep Alcep](https://tr.linkedin.com/in/recepalcep)**""")
     st.markdown("""**[Source code](https://github.com/karakastarik/epias-transparency-forecasting-tool)**""")
 
-
-
-
 #Real time generation
 #real_time_gen_data = real_time_gen(startDate=str(start_date),endDate=str(end_date))
 #real_time_gen_data.head()
-
-
-
-
-
 
 #st.table(pd.DataFrame(consumption_data.describe()).reset_index().rename(index=str,columns={"index":"Statistic"}))
 #cons_table = go.Figure(data=[go.Table(
@@ -112,8 +102,6 @@ if page == "About":
 
 #cons_markdown = f"Average hourly consumption in the last **{consumption_data.Date.count()}** hours is: **{consumption_data.Consumption.mean():.2f}**."
 #st.markdown(cons_markdown)
-
-
 
 #fig = px.line(data, x=~Date,y = ~Consumption,name = "Consumption", type = 'scatter', mode = 'lines') 
 #fig = fig.add_trace(data,y = ~Generation , name = 'Generation', mode = 'lines') 
