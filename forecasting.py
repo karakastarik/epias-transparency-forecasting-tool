@@ -84,7 +84,7 @@ def forecast(data,periods,selected_algorithm):
     print("Final Train RMSE",mean_squared_error(y_train, y_train_pred, squared=False))
     print("Final Validation RMSE:",mean_squared_error(y_val, y_val_pred, squared=False))
 
-    y=y.loc['2021-04-01':]
+    y=y.loc['2021-10-01':]
 
     return y,y_pred,X_pred
 
