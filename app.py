@@ -80,8 +80,8 @@ if page=="Data Visualization":
 if page == "About":
     st.header("About")
     st.write("v1.0")
-    st.write("Authors:")
-    st.markdown(""" **[Tarik Karakas](https://tr.linkedin.com/in/karakastarik)**, **[Recep Alcep](https://tr.linkedin.com/in/recepalcep)**""")
+    st.write("Author:")
+    st.markdown(""" **[Tarik Karakas](https://tr.linkedin.com/in/karakastarik)**""")
     st.markdown("""**[Source code](https://github.com/karakastarik/epias-transparency-forecasting-tool)**""")
 
 #Real time generation
